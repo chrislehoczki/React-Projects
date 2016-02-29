@@ -1,0 +1,272 @@
+//GET REACT BOOTSTRAP COMPONENTS
+
+var ButtonGroup = ReactBootstrap.ButtonGroup;
+var Button  = ReactBootstrap.Button;    
+var Modal = ReactBootstrap.Modal;
+var Panel = ReactBootstrap.Panel;
+var PanelGroup = ReactBootstrap.PanelGroup;
+var ListGroup = ReactBootstrap.ListGroup;
+var ListGroupItem = ReactBootstrap.ListGroupItem;
+var Input = ReactBootstrap.Input;
+var Accordion = ReactBootstrap.Accordion;
+
+
+
+//STARTING RECIPES ARRAY FOR FIRST USER
+var recipesArray = [
+              {id: 0, name: "Tom Yam Soup",
+               ingredients: ["Galangal", "Lemongrass", "Limejuice", "Vegetables"]
+              },
+              {id: 1, name: "Pad Thai",
+              ingredients: ["Noodles", "Soy Sauce", "Vegetables", "Peanuts", "Bamboo Shoots" ]
+              }
+             ]
+       
+        
+//SET LOCAL STORAGE AS STRINGIFIED ARRAY
+function setLocalStorage() {
+    var recipesLocal = JSON.stringify(recipesArray)       
+    localStorage.setItem("recipes", recipesLocal);
+}
+
+//GET LOCAL STORAGE AS JSON OBJECT
+function getLocalStorage() {
+  var recipesGlobal = localStorage.getItem("recipes");
+  recipesGlobal = JSON.parse(recipesGlobal);
+  
+  if (recipesGlobal && recipesGlobal.length > 1) {
+    recipesArray = recipesGlobal;
+  }
+}
+//GET LOCAL STORAGE TO BEGIN WITH
+getLocalStorage(); 
+
+//CONTAINER TO HOLD ALL RECIPES
+var MyContainer = React.createClass({
+
+    getInitialState() {
+    return { 
+      showModal: false,
+    };
+    },
+  
+    close: function() {
+      this.setState({showModal: false})
+    },
+  
+    show: function() {
+    this.setState({ showModal: true })
+    },
+  
+    update: function() {
+      this.forceUpdate();
+    },
+
+  
+     render: function() {
+
+       return (
+          <div>
+         <PanelGroup accordion>
+            {recipesArray.map(function(recipe) {
+              return <MyPanel key={recipe.id} name={recipe.name} ingredients={recipe.ingredients} update={this.update}/>;
+            }.bind(this))}
+          </PanelGroup>
+          <AddRecipeModal show={this.state.showModal} onHide={this.close}/>
+          <Button onClick={this.show} block bsStyle="success"> Add Recipe </Button>
+          </div>
+        );
+  
+  
+      }
+});
+
+//PANEL FOR EACH RECIPE
+var MyPanel = React.createClass({
+  
+    getInitialState() {
+    return { 
+    showModal: false,
+    };
+    },
+  
+    close: function() {
+    this.setState({showModal: false})
+    },
+  
+    show: function() {
+    this.setState({ showModal: true })
+    },
+  
+    delete: function() {
+    
+      var recipeName = this.props.name;
+      var counter = 0;
+      while (counter < recipesArray.length) {
+        if (recipesArray[counter].name === recipeName) {
+          recipesArray.splice(counter, counter+1)
+          this.props.update();
+          setLocalStorage();
+          return;
+        }
+        counter +=1
+      }
+  },
+  
+  render: function() {
+    
+    return (
+
+      <Panel collapsible defaultCollapsed header={this.props.name}>
+      <MyListGroup ingredients={this.props.ingredients}/>
+      <Button onClick={this.delete} bsStyle="danger">Delete</Button>
+      <Button onClick={this.show} bsStyle="success smallbuttons">Edit</Button>
+      <EditRecipeModal show={this.state.showModal} name={this.props.name} ingredients={this.props.ingredients} onHide={this.close} update={this.props.update}  />
+      </Panel>
+    )
+  }
+
+});
+
+//LIST GROUP FOR EACH PANEL
+var MyListGroup = React.createClass({
+  
+  render: function() {
+
+    return (
+      <div>
+      <ListGroup>
+         {this.props.ingredients.map(function(ingredient) {
+          return <ListGroupItem> {ingredient} </ListGroupItem>
+         })}
+      </ListGroup>
+      </div>
+    )
+  }
+})
+
+//MODAL TO ADD RECIPE
+var AddRecipeModal = React.createClass({
+  
+  getInitialState: function() {
+  
+  return {name: this.props.name,
+           ingredients: this.props.ingredients,
+           }
+  },
+  
+  addName: function(event) {
+    this.setState({name: event.target.value});
+  },
+  
+  addIngredients: function(event) {
+    this.setState({ingredients: event.target.value});
+  },
+  
+  addRecipe: function() {
+        
+        var ingredients = this.state.ingredients;
+        ingredients = ingredients.split(",");
+        var newRecipe = {
+          id: recipesArray.length,
+          name: this.state.name,
+          ingredients: ingredients
+        }
+      
+        recipesArray.push(newRecipe)
+        this.props.onHide()
+        setLocalStorage()
+  },
+  
+  render: function() {
+    return (
+      <div>
+        <Modal show={this.props.show} >
+          <Modal.Header>
+            <Modal.Title>Add Your Recipe</Modal.Title>
+          </Modal.Header>
+
+          <Modal.Body>
+            <Input type="text" label="Recipe Name" onChange={this.addName} />
+            <Input type="text" label="Ingredients" placeholder="Enter your ingredients separated by a comma." onChange={this.addIngredients}/>
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button onClick={this.props.onHide}>Close</Button>
+            <Button bsStyle="primary" onClick={this.addRecipe}>Save changes</Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+    )
+      }
+});
+
+//MODAL TO EDIT RECIPE
+var EditRecipeModal = React.createClass({
+  
+  getInitialState: function() {
+    return {name: this.props.name,
+           ingredients: this.props.ingredients,
+           }
+  },
+  
+  addName: function(event) {
+    this.setState({name: event.target.value});
+  },
+  
+  addIngredients: function(event) {
+    this.setState({ingredients: event.target.value});
+  },
+  
+  addRecipe: function() {
+    var ingredients = this.state.ingredients;
+    ingredients = ingredients.split(",");
+    
+    var recipeName = this.props.name;
+    var counter = 0;
+    while (counter < recipesArray.length) {
+
+      if (recipesArray[counter].name === recipeName) {
+        recipesArray[counter].name = this.state.name;
+        recipesArray[counter].ingredients = ingredients;
+        this.props.onHide();
+        this.props.update();
+        this.props.success();
+        setLocalStorage();
+        return;
+      }
+      counter +=1
+    }
+       
+    
+  },
+  
+  render: function() {
+    return (
+      <div className="static-modal">
+        <Modal show={this.props.show}>
+          <Modal.Header>
+            <Modal.Title>Edit Your Recipe</Modal.Title>
+          </Modal.Header>
+
+          <Modal.Body>
+            <Input type="text" label="Recipe Name" value={this.state.name} onChange={this.addName}/>
+          <Input type="text" label="Ingredients" value={this.state.ingredients} onChange={this.addIngredients}/>
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button onClick={this.props.onHide}>Close</Button>
+            <Button bsStyle="primary" onClick={this.addRecipe}>Save changes</Button>
+          </Modal.Footer>
+
+        </Modal>
+      </div>
+    )
+    
+      }
+});
+
+
+//RENDER CONTAINER
+
+React.render(<MyContainer />, document.getElementById("recipeBox"));

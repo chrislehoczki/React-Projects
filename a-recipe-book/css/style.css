@@ -1,0 +1,27 @@
+#recipeBox {
+  width: 25%;
+  margin: 50px auto;
+}
+
+body {
+  font-family: "Oswald";
+}
+
+.title {
+  text-align: center;
+  margin: 40px;
+}
+
+.title h1 {
+  font-size: 3em;
+}
+
+.smallbuttons {
+  margin: 10px;
+}
+
+@media screen and (max-width: 600px) {
+  #recipeBox {
+    width: 75%;
+  }
+}

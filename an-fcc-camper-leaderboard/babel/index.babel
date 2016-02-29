@@ -1,0 +1,89 @@
+var fccUrl = "http://fcctop100.herokuapp.com/api/fccusers/top/"
+
+var Leaderboard = React.createClass({
+  //ON LOAD
+  componentDidMount: function() {
+  //GET ALL TIME DATA
+  $.getJSON(fccUrl + "alltime", function(data) {
+          this.setState({list: data})
+          }.bind(this));
+  },
+  
+  //SET ORIGINAL STATES
+  getInitialState: function() {
+
+  return {
+    list: [],
+    header1: "unselected",
+    header2: "selected" 
+  }
+  },
+  
+  //FUNCTION TO SORT BY 30 DAYS POINTS
+  sortRecent: function() {
+    //RECENT
+  $.getJSON(fccUrl + "recent", function(data) {
+          this.setState({list: data})
+      }.bind(this));
+    
+    this.setState({header1: "selected"})
+    this.setState({header2: "unselected"})
+    
+  },
+  
+  //FUNCTION TO SORT BY ALL TIME POINTS
+  sortAll: function() {
+    $.getJSON(fccUrl + "alltime", function(data) {
+          this.setState({list: data})
+          }.bind(this));
+    
+    this.setState({header1: "unselected"})
+    this.setState({header2: "selected"})
+  },
+  
+  render: function() {
+
+      return (
+      <table className="table table-striped table-bordered">
+        <thead>
+          <tr> 
+            <th> # </th>   
+            <th> Camper Name </th>  
+            <th className={this.state.header1} onClick={this.sortRecent}> Points Last 30 Days &#9660; {this.state.arrow1} </th>
+            <th className={this.state.header2} onClick={this.sortAll}> All Time Points &#9660; {this.state.arrow2} </th>
+          </tr>
+        </thead>
+          <tbody>
+             {this.state.list.map(function(item, i) {
+
+              var itemName = item.username;
+              return (
+              <TableRow number={i} name={item.username} recentPoints={item.recent} allTimePoints={item.alltime} img={item.img} url={"http://www.freecodecamp.com/" + itemName}/>
+              )
+            })}
+          </tbody>
+      </table>
+      );
+  }
+});
+
+var TableRow = React.createClass({
+  
+  render: function() {
+    
+    return (
+    <tr> 
+      <td className="number">  {this.props.number} </td> 
+      <td> <img src={this.props.img}/><a target="_blank" href={this.props.url}> {this.props.name} </a> </td> 
+      <td> {this.props.recentPoints} </td> 
+      <td> {this.props.allTimePoints} </td> 
+    </tr>
+    ) 
+  }
+})
+
+React.render(<Leaderboard />, document.getElementById("container"))
+
+
+
+

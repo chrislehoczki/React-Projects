@@ -1,0 +1,59 @@
+body {
+  font-family: "Oswald";
+}
+
+.title {
+  text-align: center;
+  margin: 100px;
+}
+
+.title h1 {
+  font-size: 3em;
+}
+
+.table {
+  width: 60%;
+  margin: 40px auto;
+}
+
+th {
+  font-size: 1.5em;
+  text-align: center;
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+}
+
+img {
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  margin-right: 10px;
+}
+
+.number {
+  font-size: 1.5em;
+}
+
+.down {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid black;
+  float: right;
+}
+
+.selected {
+  color: slateblue;
+  cursor: pointer;
+  cursor: hand;
+}
+
+.unselected {
+  color: #333333;
+  cursor: pointer;
+  cursor: hand;
+}
