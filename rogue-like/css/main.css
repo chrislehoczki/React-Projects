@@ -1,178 +1,173 @@
-
-
 body {
   text-align: center;
   font-family: "Oswald";
   height: 800px;
   font-size: 1.5em;
-  color: #288FEB;
+  color: #288feb;
   background-color: black;
 }
 
 ul {
-	margin: 0px auto;
-	height: 30px;
+  margin: 0px auto;
+  height: 30px;
 }
 
 ul li {
-	display: inline-block;
-	float: left;
-	margin-right: 25px;
+  display: inline-block;
+  float: left;
+  margin-right: 25px;
 }
 
 select {
-	display: inline;
-	background-color: black;
-	padding: 1px;
+  display: inline;
+  background-color: black;
+  padding: 1px;
 }
 
 .title {
   text-align: center;
   margin-top: 50px;
-  margin-bottom: 50px; 
+  margin-bottom: 50px;
 }
 
-  
 .title h1 {
-  font-size: 5em
+  font-size: 5em;
 }
 
 .board-container {
-	border: 5px solid white;
-	width: 420px;
-	height: 420px;
-	margin: 0px auto;
+  border: 5px solid white;
+  width: 420px;
+  height: 420px;
+  margin: 0px auto;
 }
 
 .alert {
-	width: 420px;
-	margin: 0px auto;
-	margin-top: 10px;
-	clear: both;
-	border-bottom-left-radius: 0px;
-	border-bottom-right-radius: 0px;
+  width: 420px;
+  margin: 0px auto;
+  margin-top: 10px;
+  clear: both;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
 }
 
 .btn {
-	display: block;
-	clear: both;
-	width: 420px;
-	margin: 0px auto;
-	border-top-left-radius: 0px;
-	border-top-right-radius: 0px;
+  display: block;
+  clear: both;
+  width: 420px;
+  margin: 0px auto;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
 }
 
 .weapons-select {
-	clear: both;
-	display: block;
-	margin-top: 10px;
-	margin-bottom: 10px;
+  clear: both;
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .weapons-select-text {
-	display: inline;
-	clear: both;
-	margin-right: 10px;
+  display: inline;
+  clear: both;
+  margin-right: 10px;
 }
 
 .key {
-	clear: both;
-	display: block;
-	width: 420px
-	margin: 0px auto;
-	margin-top: 20px;
+  clear: both;
+  display: block;
+  width: 420px;
+  margin: 0px auto;
+  margin-top: 20px;
 }
 
 .key ul {
-	width: 400px;
+  width: 400px;
 }
 
 .key ul li {
-	display: inline;
-	width: 18%;
-	text-align: left;
+  display: inline;
+  width: 18%;
+  text-align: left;
 }
 
 .key ul li div {
-	float: center;
-	margin-right: 5px;
-	margin-top: 6px;
+  float: center;
+  margin-right: 5px;
+  margin-top: 6px;
 }
 
 .key ul li p {
-	display: inline;
-	float: center;
-	text-align: left;
-	color: white;
+  display: inline;
+  float: center;
+  text-align: left;
+  color: white;
 }
 
 .state {
-	margin: 0px auto;
-	width: 55%;
-	margin-bottom: 20px;
+  margin: 0px auto;
+  width: 55%;
+  margin-bottom: 20px;
 }
 
 .empty {
-	height: 10px;
-	width: 10px;
-	padding: 0px;
-	background-color: black;
-	display: inline;
-	float: left;
+  height: 10px;
+  width: 10px;
+  padding: 0px;
+  background-color: black;
+  display: inline;
+  float: left;
 }
 
 .wall {
-	height: 10px;
-	width: 10px;
-	padding: 0px;
-	background-color: gray;
-	display: inline;
-	float: left;
+  height: 10px;
+  width: 10px;
+  padding: 0px;
+  background-color: gray;
+  display: inline;
+  float: left;
 }
 
 .player {
-	height: 10px;
-	width: 10px;
-	padding: 0px;
-	background-color: blue;
-	display: inline;
-	float: left;
+  height: 10px;
+  width: 10px;
+  padding: 0px;
+  background-color: blue;
+  display: inline;
+  float: left;
 }
 
 .enemy {
-	height: 10px;
-	width: 10px;
-	padding: 0px;
-	background-color: red;
-	display: inline;
-	float: left;
+  height: 10px;
+  width: 10px;
+  padding: 0px;
+  background-color: red;
+  display: inline;
+  float: left;
 }
 
 .boss {
-	height: 10px;
-	width: 10px;
-	padding: 0px;
-	background-color: purple;
-	display: inline;
-	float: left;
-
+  height: 10px;
+  width: 10px;
+  padding: 0px;
+  background-color: purple;
+  display: inline;
+  float: left;
 }
 
 .weapon {
-	height: 10px;
-	width: 10px;
-	padding: 0px;
-	background-color: yellow;
-	display: inline;
-	float: left;
+  height: 10px;
+  width: 10px;
+  padding: 0px;
+  background-color: yellow;
+  display: inline;
+  float: left;
 }
 
 .life {
-	height: 10px;
-	width: 10px;
-	padding: 0px;
-	background-color: green;
-	display: inline;
-	float: left;
+  height: 10px;
+  width: 10px;
+  padding: 0px;
+  background-color: green;
+  display: inline;
+  float: left;
 }
-

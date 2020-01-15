@@ -13,11 +13,24 @@ var Input = ReactBootstrap.Input;
 var Accordion = ReactBootstrap.Accordion;
 
 //STARTING RECIPES ARRAY FOR FIRST USER
-var recipesArray = [{ id: 0, name: "Tom Yam Soup",
-  ingredients: ["Galangal", "Lemongrass", "Limejuice", "Vegetables"]
-}, { id: 1, name: "Pad Thai",
-  ingredients: ["Noodles", "Soy Sauce", "Vegetables", "Peanuts", "Bamboo Shoots"]
-}];
+var recipesArray = [
+  {
+    id: 0,
+    name: "Tom Yam Soup",
+    ingredients: ["Galangal", "Lemongrass", "Limejuice", "Vegetables"]
+  },
+  {
+    id: 1,
+    name: "Pad Thai",
+    ingredients: [
+      "Noodles",
+      "Soy Sauce",
+      "Vegetables",
+      "Peanuts",
+      "Bamboo Shoots"
+    ]
+  }
+];
 
 //SET LOCAL STORAGE AS STRINGIFIED ARRAY
 function setLocalStorage() {
@@ -59,18 +72,27 @@ var MyContainer = React.createClass({
   },
 
   render: function render() {
-
     return React.createElement(
       "div",
       null,
       React.createElement(
         PanelGroup,
         { accordion: true },
-        recipesArray.map(function (recipe) {
-          return React.createElement(MyPanel, { key: recipe.id, name: recipe.name, ingredients: recipe.ingredients, update: this.update });
-        }.bind(this))
+        recipesArray.map(
+          function(recipe) {
+            return React.createElement(MyPanel, {
+              key: recipe.id,
+              name: recipe.name,
+              ingredients: recipe.ingredients,
+              update: this.update
+            });
+          }.bind(this)
+        )
       ),
-      React.createElement(AddRecipeModal, { show: this.state.showModal, onHide: this.close }),
+      React.createElement(AddRecipeModal, {
+        show: this.state.showModal,
+        onHide: this.close
+      }),
       React.createElement(
         Button,
         { onClick: this.show, block: true, bsStyle: "success" },
@@ -98,7 +120,6 @@ var MyPanel = React.createClass({
   },
 
   delete: function _delete() {
-
     var recipeName = this.props.name;
     var counter = 0;
     while (counter < recipesArray.length) {
@@ -113,7 +134,6 @@ var MyPanel = React.createClass({
   },
 
   render: function render() {
-
     return React.createElement(
       Panel,
       { collapsible: true, defaultCollapsed: true, header: this.props.name },
@@ -128,10 +148,15 @@ var MyPanel = React.createClass({
         { onClick: this.show, bsStyle: "success smallbuttons" },
         "Edit"
       ),
-      React.createElement(EditRecipeModal, { show: this.state.showModal, name: this.props.name, ingredients: this.props.ingredients, onHide: this.close, update: this.props.update })
+      React.createElement(EditRecipeModal, {
+        show: this.state.showModal,
+        name: this.props.name,
+        ingredients: this.props.ingredients,
+        onHide: this.close,
+        update: this.props.update
+      })
     );
   }
-
 });
 
 //LIST GROUP FOR EACH PANEL
@@ -139,21 +164,14 @@ var MyListGroup = React.createClass({
   displayName: "MyListGroup",
 
   render: function render() {
-
     return React.createElement(
       "div",
       null,
       React.createElement(
         ListGroup,
         null,
-        this.props.ingredients.map(function (ingredient) {
-          return React.createElement(
-            ListGroupItem,
-            null,
-            " ",
-            ingredient,
-            " "
-          );
+        this.props.ingredients.map(function(ingredient) {
+          return React.createElement(ListGroupItem, null, " ", ingredient, " ");
         })
       )
     );
@@ -165,10 +183,7 @@ var AddRecipeModal = React.createClass({
   displayName: "AddRecipeModal",
 
   getInitialState: function getInitialState() {
-
-    return { name: this.props.name,
-      ingredients: this.props.ingredients
-    };
+    return { name: this.props.name, ingredients: this.props.ingredients };
   },
 
   addName: function addName(event) {
@@ -180,7 +195,6 @@ var AddRecipeModal = React.createClass({
   },
 
   addRecipe: function addRecipe() {
-
     var ingredients = this.state.ingredients;
     ingredients = ingredients.split(",");
     var newRecipe = {
@@ -204,26 +218,27 @@ var AddRecipeModal = React.createClass({
         React.createElement(
           Modal.Header,
           null,
-          React.createElement(
-            Modal.Title,
-            null,
-            "Add Your Recipe"
-          )
+          React.createElement(Modal.Title, null, "Add Your Recipe")
         ),
         React.createElement(
           Modal.Body,
           null,
-          React.createElement(Input, { type: "text", label: "Recipe Name", onChange: this.addName }),
-          React.createElement(Input, { type: "text", label: "Ingredients", placeholder: "Enter your ingredients separated by a comma.", onChange: this.addIngredients })
+          React.createElement(Input, {
+            type: "text",
+            label: "Recipe Name",
+            onChange: this.addName
+          }),
+          React.createElement(Input, {
+            type: "text",
+            label: "Ingredients",
+            placeholder: "Enter your ingredients separated by a comma.",
+            onChange: this.addIngredients
+          })
         ),
         React.createElement(
           Modal.Footer,
           null,
-          React.createElement(
-            Button,
-            { onClick: this.props.onHide },
-            "Close"
-          ),
+          React.createElement(Button, { onClick: this.props.onHide }, "Close"),
           React.createElement(
             Button,
             { bsStyle: "primary", onClick: this.addRecipe },
@@ -240,9 +255,7 @@ var EditRecipeModal = React.createClass({
   displayName: "EditRecipeModal",
 
   getInitialState: function getInitialState() {
-    return { name: this.props.name,
-      ingredients: this.props.ingredients
-    };
+    return { name: this.props.name, ingredients: this.props.ingredients };
   },
 
   addName: function addName(event) {
@@ -260,7 +273,6 @@ var EditRecipeModal = React.createClass({
     var recipeName = this.props.name;
     var counter = 0;
     while (counter < recipesArray.length) {
-
       if (recipesArray[counter].name === recipeName) {
         recipesArray[counter].name = this.state.name;
         recipesArray[counter].ingredients = ingredients;
@@ -284,26 +296,28 @@ var EditRecipeModal = React.createClass({
         React.createElement(
           Modal.Header,
           null,
-          React.createElement(
-            Modal.Title,
-            null,
-            "Edit Your Recipe"
-          )
+          React.createElement(Modal.Title, null, "Edit Your Recipe")
         ),
         React.createElement(
           Modal.Body,
           null,
-          React.createElement(Input, { type: "text", label: "Recipe Name", value: this.state.name, onChange: this.addName }),
-          React.createElement(Input, { type: "text", label: "Ingredients", value: this.state.ingredients, onChange: this.addIngredients })
+          React.createElement(Input, {
+            type: "text",
+            label: "Recipe Name",
+            value: this.state.name,
+            onChange: this.addName
+          }),
+          React.createElement(Input, {
+            type: "text",
+            label: "Ingredients",
+            value: this.state.ingredients,
+            onChange: this.addIngredients
+          })
         ),
         React.createElement(
           Modal.Footer,
           null,
-          React.createElement(
-            Button,
-            { onClick: this.props.onHide },
-            "Close"
-          ),
+          React.createElement(Button, { onClick: this.props.onHide }, "Close"),
           React.createElement(
             Button,
             { bsStyle: "primary", onClick: this.addRecipe },
@@ -317,4 +331,7 @@ var EditRecipeModal = React.createClass({
 
 //RENDER CONTAINER
 
-React.render(React.createElement(MyContainer, null), document.getElementById("recipeBox"));
+React.render(
+  React.createElement(MyContainer, null),
+  document.getElementById("recipeBox")
+);

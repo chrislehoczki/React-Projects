@@ -2,13 +2,20 @@
 
 //BOARD VARIABLES
 var height = 20,
-    width = 20,
-    cellWidth = 15,
-    margin = 2;
+  width = 20,
+  cellWidth = 15,
+  margin = 2;
 var startingCells = 70;
 var speed = 750;
 //CREATE BOARD
-var boardState = createBoard(height, width, cellWidth, margin, speed, startingCells);
+var boardState = createBoard(
+  height,
+  width,
+  cellWidth,
+  margin,
+  speed,
+  startingCells
+);
 var game; //GLOBAL VAR TO HOLD INTERVAL
 
 //BOARD COMPONENT
@@ -21,14 +28,16 @@ var Board = React.createClass({
 
   componentDidMount: function componentDidMount() {
     //RUN ON START
-    this.interval = setInterval(function () {
-      this.takeTurn();
-      this.setState({ generations: this.state.generations + 1 });
-    }.bind(this), this.state.speed);
+    this.interval = setInterval(
+      function() {
+        this.takeTurn();
+        this.setState({ generations: this.state.generations + 1 });
+      }.bind(this),
+      this.state.speed
+    );
   },
 
   takeTurn: function takeTurn() {
-
     //FUNCTION TO GET LIVE AND DEAD CELLS
     var cells = getCells(this.state);
 
@@ -36,70 +45,70 @@ var Board = React.createClass({
     //LOOP THROUGH ALL INNER CELLS
     //find number of specific cell
     var stateObj = {};
-    cells.innerCells.deadCells.map(function (cell) {
+    cells.innerCells.deadCells.map(
+      function(cell) {
+        var number = cell.number;
+        var neighbours = [];
+        neighbours[0] = this.state[number - 1];
+        neighbours[1] = this.state[number + 1];
+        neighbours[2] = this.state[number - this.state.width];
+        neighbours[3] = this.state[number - this.state.width - 1];
+        neighbours[4] = this.state[number - this.state.width + 1];
+        neighbours[5] = this.state[number + this.state.width];
+        neighbours[6] = this.state[number + this.state.width - 1];
+        neighbours[7] = this.state[number + this.state.width + 1];
+        //if cell has 3 neighbours - comes alive
+        var neighbourCounter = 0;
+        neighbours.map(function(neighbour) {
+          if (neighbour.status === "alive") {
+            neighbourCounter += 1;
+          }
+        });
 
-      var number = cell.number;
-      var neighbours = [];
-      neighbours[0] = this.state[number - 1];
-      neighbours[1] = this.state[number + 1];
-      neighbours[2] = this.state[number - this.state.width];
-      neighbours[3] = this.state[number - this.state.width - 1];
-      neighbours[4] = this.state[number - this.state.width + 1];
-      neighbours[5] = this.state[number + this.state.width];
-      neighbours[6] = this.state[number + this.state.width - 1];
-      neighbours[7] = this.state[number + this.state.width + 1];
-      //if cell has 3 neighbours - comes alive
-      var neighbourCounter = 0;
-      neighbours.map(function (neighbour) {
-        if (neighbour.status === "alive") {
-          neighbourCounter += 1;
-        }
-      });
+        if (neighbourCounter === 3) {
+          //BUILD STATE OBJECT TO SET STATE TO ALIVE
 
-      if (neighbourCounter === 3) {
-        //BUILD STATE OBJECT TO SET STATE TO ALIVE
+          stateObj[number] = {};
+          stateObj[number].number = cell.number;
+          stateObj[number].status = "alive";
 
-        stateObj[number] = {};
-        stateObj[number].number = cell.number;
-        stateObj[number].status = "alive";
+          //SET NEW STATE FOR SPECIFIC CELL
+        } //END OF IF
+      }.bind(this)
+    ); //END OF MAP
 
-        //SET NEW STATE FOR SPECIFIC CELL
-      } //END OF IF
-    }.bind(this)); //END OF MAP
+    cells.innerCells.aliveCells.map(
+      function(cell) {
+        var number = cell.number;
 
-    cells.innerCells.aliveCells.map(function (cell) {
+        var neighbours = [];
+        neighbours[0] = this.state[number - 1];
+        neighbours[1] = this.state[number + 1];
+        neighbours[2] = this.state[number - this.state.width];
+        neighbours[3] = this.state[number - this.state.width - 1];
+        neighbours[4] = this.state[number - this.state.width + 1];
+        neighbours[5] = this.state[number + this.state.width];
+        neighbours[6] = this.state[number + this.state.width - 1];
+        neighbours[7] = this.state[number + this.state.width + 1];
 
-      var number = cell.number;
+        //if cell has 2 or 3 neighbours - it dies
+        var neighbourCounter = 0;
+        neighbours.map(function(neighbour) {
+          if (neighbour.status === "alive") {
+            neighbourCounter += 1;
+          }
+        });
 
-      var neighbours = [];
-      neighbours[0] = this.state[number - 1];
-      neighbours[1] = this.state[number + 1];
-      neighbours[2] = this.state[number - this.state.width];
-      neighbours[3] = this.state[number - this.state.width - 1];
-      neighbours[4] = this.state[number - this.state.width + 1];
-      neighbours[5] = this.state[number + this.state.width];
-      neighbours[6] = this.state[number + this.state.width - 1];
-      neighbours[7] = this.state[number + this.state.width + 1];
-
-      //if cell has 2 or 3 neighbours - it dies
-      var neighbourCounter = 0;
-      neighbours.map(function (neighbour) {
-        if (neighbour.status === "alive") {
-          neighbourCounter += 1;
-        }
-      });
-
-      if (neighbourCounter < 2 || neighbourCounter > 3) {
-
-        stateObj[number] = {};
-        stateObj[number].number = cell.number;
-        stateObj[number].status = "dead";
-      } //END OF IF
-    }.bind(this)); //END OF MAP
+        if (neighbourCounter < 2 || neighbourCounter > 3) {
+          stateObj[number] = {};
+          stateObj[number].number = cell.number;
+          stateObj[number].status = "dead";
+        } //END OF IF
+      }.bind(this)
+    ); //END OF MAP
 
     //IF CELL IS ON OUTSIDE, DESTROY IT
-    cells.outerCells.allCells.map(function (cell) {
-
+    cells.outerCells.allCells.map(function(cell) {
       var number = cell.number;
       stateObj[number] = {};
       stateObj[number].number = cell.number;
@@ -111,13 +120,15 @@ var Board = React.createClass({
   },
 
   startGame: function startGame() {
-
     //SETS INTERVAL AND RUNS GAME FUNCTION EACH SEC
     clearInterval(this.interval);
-    this.interval = setInterval(function () {
-      this.takeTurn();
-      this.setState({ generations: this.state.generations + 1 });
-    }.bind(this), this.state.speed);
+    this.interval = setInterval(
+      function() {
+        this.takeTurn();
+        this.setState({ generations: this.state.generations + 1 });
+      }.bind(this),
+      this.state.speed
+    );
   },
 
   stopGame: function stopGame() {
@@ -126,7 +137,13 @@ var Board = React.createClass({
 
   resetGame: function resetGame() {
     clearInterval(this.interval);
-    var newState = createBoard(this.state.height, this.state.width, cellWidth, margin, this.state.speed);
+    var newState = createBoard(
+      this.state.height,
+      this.state.width,
+      cellWidth,
+      margin,
+      this.state.speed
+    );
     this.setState(newState);
   },
 
@@ -144,7 +161,6 @@ var Board = React.createClass({
     clearInterval(this.interval);
     var newSpeed;
     if (speed === "Slow") {
-
       newSpeed = 750;
     } else if (speed === "Medium") {
       newSpeed = 500;
@@ -152,13 +168,16 @@ var Board = React.createClass({
       newSpeed = 250;
     }
 
-    this.setState({ speed: newSpeed }, function () {
+    this.setState({ speed: newSpeed }, function() {
       console.log(this.state.speed);
     });
-    this.interval = setInterval(function () {
-      this.takeTurn();
-      this.setState({ generations: this.state.generations + 1 });
-    }.bind(this), this.state.speed);
+    this.interval = setInterval(
+      function() {
+        this.takeTurn();
+        this.setState({ generations: this.state.generations + 1 });
+      }.bind(this),
+      this.state.speed
+    );
   },
 
   changeWidth: function changeWidth(value) {
@@ -166,7 +185,7 @@ var Board = React.createClass({
     clearInterval(this.interval);
     var height = this.state.height;
     var boardState = createBoard(height, +newWidth, cellWidth, margin, speed);
-    this.setState(boardState, function () {
+    this.setState(boardState, function() {
       console.log("width: " + this.state.width + "size: " + this.state.size);
     });
   },
@@ -176,26 +195,36 @@ var Board = React.createClass({
     var width = this.state.width;
     clearInterval(game);
     var boardState = createBoard(+newHeight, width, cellWidth, margin, speed);
-    this.setState(boardState, function () {
+    this.setState(boardState, function() {
       console.log("height: " + this.state.height + "size: " + this.state.size);
     });
   },
 
   render: function render() {
-
     //CREATE BOARD STYLES - RETURNS styles object with cell and board keys
     var styles = createStyles(this.state);
 
     //CREATE CELLS
     var cells = [];
     for (var i = 0; i < this.state.size; i++) {
-      cells.push(React.createElement(Cell, { styling: styles.cell, status: this.state[i].status, number: i, convert: this.convert }));
+      cells.push(
+        React.createElement(Cell, {
+          styling: styles.cell,
+          status: this.state[i].status,
+          number: i,
+          convert: this.convert
+        })
+      );
     }
 
     return React.createElement(
       "div",
       { className: "container" },
-      React.createElement(ButtonGroup, { startGame: this.startGame, stopGame: this.stopGame, resetGame: this.resetGame }),
+      React.createElement(ButtonGroup, {
+        startGame: this.startGame,
+        stopGame: this.stopGame,
+        resetGame: this.resetGame
+      }),
       React.createElement(
         "span",
         { className: "generation" },
@@ -211,18 +240,20 @@ var Board = React.createClass({
           { className: "board", style: styles.board },
           cells
         ),
-        React.createElement(InputGroup, { changeSpeed: this.changeSpeed, changeWidth: this.changeWidth, changeHeight: this.changeHeight })
+        React.createElement(InputGroup, {
+          changeSpeed: this.changeSpeed,
+          changeWidth: this.changeWidth,
+          changeHeight: this.changeHeight
+        })
       )
     );
   }
-
 });
 
 var ButtonGroup = React.createClass({
   displayName: "ButtonGroup",
 
   render: function render() {
-
     return React.createElement(
       "div",
       null,
@@ -243,7 +274,6 @@ var ButtonGroup = React.createClass({
       )
     );
   }
-
 });
 
 var InputGroup = React.createClass({
@@ -262,16 +292,28 @@ var InputGroup = React.createClass({
   },
 
   render: function render() {
-
     return React.createElement(
       "div",
       null,
       React.createElement(
         "form",
         { className: "form" },
-        React.createElement(FieldSet, { onChange: this.changeWidth, name: "Width", options: [20, 30, 40, 50] }),
-        React.createElement(FieldSet, { onChange: this.changeHeight, name: "Height", options: [20, 30, 40, 50] }),
-        React.createElement(FieldSet, { onChange: this.changeSpeed, name: "Speed", selected: [false, "selected", false], options: ["Slow", "Medium", "Fast"] })
+        React.createElement(FieldSet, {
+          onChange: this.changeWidth,
+          name: "Width",
+          options: [20, 30, 40, 50]
+        }),
+        React.createElement(FieldSet, {
+          onChange: this.changeHeight,
+          name: "Height",
+          options: [20, 30, 40, 50]
+        }),
+        React.createElement(FieldSet, {
+          onChange: this.changeSpeed,
+          name: "Speed",
+          selected: [false, "selected", false],
+          options: ["Slow", "Medium", "Fast"]
+        })
       )
     );
   }
@@ -296,22 +338,12 @@ var FieldSet = React.createClass({
       React.createElement(
         "fieldset",
         null,
-        React.createElement(
-          "label",
-          { "for": "height" },
-          this.props.name
-        ),
+        React.createElement("label", { for: "height" }, this.props.name),
         React.createElement(
           "select",
           { onChange: this.onChange, id: "height" },
-          this.props.options.map(function (option) {
-            return React.createElement(
-              "option",
-              null,
-              " ",
-              option,
-              " "
-            );
+          this.props.options.map(function(option) {
+            return React.createElement("option", null, " ", option, " ");
           })
         )
       )
@@ -323,9 +355,7 @@ var Cell = React.createClass({
   displayName: "Cell",
 
   getInitialState: function getInitialState() {
-    return { status: this.props.status,
-      number: this.props.number
-    };
+    return { status: this.props.status, number: this.props.number };
   },
 
   changeState: function changeState() {
@@ -339,13 +369,18 @@ var Cell = React.createClass({
   },
 
   render: function render() {
-
-    return React.createElement("div", { style: this.props.styling, onClick: this.changeState, className: this.props.status });
+    return React.createElement("div", {
+      style: this.props.styling,
+      onClick: this.changeState,
+      className: this.props.status
+    });
   }
-
 });
 
-ReactDOM.render(React.createElement(Board, null), document.getElementById("board"));
+ReactDOM.render(
+  React.createElement(Board, null),
+  document.getElementById("board")
+);
 
 //CREATE BOARD LAYOUT FROM VALUES
 function createBoard(height, width, cellWidth, margin, speed, options) {
@@ -450,7 +485,7 @@ function getCells(state) {
   }
 
   //GET OUTER CELLS
-  var outerCells = cells.filter(function (obj) {
+  var outerCells = cells.filter(function(obj) {
     var top = outside.top.indexOf(obj.number) > -1;
     var bottom = outside.bottom.indexOf(obj.number) > -1;
     var left = outside.left.indexOf(obj.number) > -1;
@@ -465,39 +500,49 @@ function getCells(state) {
   }
 
   //GET INNER CELLS
-  var innerCells = cells.filter(function (obj) {
+  var innerCells = cells.filter(function(obj) {
     return outerCellNumbers.indexOf(obj.number) === -1;
   });
 
   //FIRST WORK ON INNER CELLS
-  var innerDeadCells = innerCells.filter(function (obj) {
+  var innerDeadCells = innerCells.filter(function(obj) {
     return obj.status === "dead";
   });
 
-  var innerAliveCells = innerCells.filter(function (obj) {
+  var innerAliveCells = innerCells.filter(function(obj) {
     return obj.status === "alive";
   });
 
   //NOW OUTER CELLS
-  var outerDeadCells = outerCells.filter(function (obj) {
+  var outerDeadCells = outerCells.filter(function(obj) {
     return obj.status === "dead";
   });
 
-  var outerAliveCells = outerCells.filter(function (obj) {
+  var outerAliveCells = outerCells.filter(function(obj) {
     return obj.status === "alive";
   });
 
   return {
-    innerCells: { allCells: innerCells, aliveCells: innerAliveCells, deadCells: innerDeadCells },
-    outerCells: { allCells: outerCells, aliveCells: outerAliveCells, deadCells: outerDeadCells }
+    innerCells: {
+      allCells: innerCells,
+      aliveCells: innerAliveCells,
+      deadCells: innerDeadCells
+    },
+    outerCells: {
+      allCells: outerCells,
+      aliveCells: outerAliveCells,
+      deadCells: outerDeadCells
+    }
   };
 }
 
 function makeFooter() {
   var html = "<footer><ul>";
   html += "<ul>";
-  html += "<li><a target='_blank' href='http://blog.cphillips.co.uk'> Blog </a> </li>";
-  html += "<li><a target='_blank' href='http://cphillips.co.uk'> Portfolio </a> </li>";
+  html +=
+    "<li><a target='_blank' href='http://blog.cphillips.co.uk'> Blog </a> </li>";
+  html +=
+    "<li><a target='_blank' href='http://cphillips.co.uk'> Portfolio </a> </li>";
   $("body").append(html);
 }
 
